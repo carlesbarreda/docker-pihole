@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  pihole:
+    image: cbm/pihole:latest
+    container_name: pihole
+    hostname: pihole
+    domainname: cliscles.local
+    dns:
+      - 1.1.1.2
+      - 1.0.0.2
+    cap_add:
+      - CAP_NET_BIND_SERVICE
+      - NET_ADMIN
+    ports:
+      - 53:53/tcp
+      - 53:53/udp
+      - 67:67/udp
+      - 80:80/tcp
+      - 443:443/tcp
+      - 5300:5300/tcp
+      - 5300:5300/udp
+    environment:
+      ADMIN_EMAIL: 'cbm@carlesbarreda.cat'
+      TZ: 'Europe/Madrid'
+      WEBPASSWORD: ''
+      DNS1: '1.1.1.2'
+      DNS2: '1.0.0.2'
+      DNSSEC: 'true'
+      DNS_BOGUS_PRIV: 'true'
+      ServerIP: '192.168.1.4'
+      VIRTUAL_HOST: 'pihole.cliscles.local'
+      DNSMASQ_USER: 'pihole'
+    volumes:
+      - ./config/pihole:/etc/pihole
+      - ./config/dnsmasq.d:/etc/dnsmasq.d
+      - ./config/dnscrypt-proxy:/etc/dnscrypt-proxy
+    restart: unless-stopped
+    #restart: always
